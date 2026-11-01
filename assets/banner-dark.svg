@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="292" viewBox="0 0 1280 292" role="img" aria-label="xinjun — AI 安全  /  LLM Agent  /  算子与推理加速">
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#58a6ff" stroke-opacity="0.06" stroke-width="1" />
+    </pattern>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.34" />
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="292" rx="20" fill="#0d1117" stroke="#30363d" />
+  <rect width="1280" height="292" rx="20" fill="url(#grid)" />
+  <rect x="0" y="40" width="5" height="212" rx="2.5" fill="url(#bar)" />
+
+  <text x="64" y="88" font-size="13" letter-spacing="4.2"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#22d3ee">HELLO THERE  ·  你好，我是</text>
+  <text x="62" y="158" font-size="60" font-weight="700" letter-spacing="0.5"
+        font-family="'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Noto Serif SC', 'Songti SC', 'SimSun', serif" fill="#e6edf3">xinjun</text>
+  <text x="66" y="198" font-size="18.5" letter-spacing="1.1"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#8b949e">AI 安全  /  LLM Agent  /  算子与推理加速</text>
+  <rect x="64" y="220" width="72" height="30" rx="15" fill="#161b22" stroke="#30363d" /><text x="100" y="240" text-anchor="middle" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#8b949e">Python</text><rect x="148" y="220" width="114" height="30" rx="15" fill="#161b22" stroke="#30363d" /><text x="206" y="240" text-anchor="middle" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#8b949e">MCP / Agent</text><rect x="275" y="220" width="140" height="30" rx="15" fill="#161b22" stroke="#30363d" /><text x="345" y="240" text-anchor="middle" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#8b949e">PyTorch / SUPA</text><rect x="426" y="220" width="81" height="30" rx="15" fill="#161b22" stroke="#30363d" /><text x="467" y="240" text-anchor="middle" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#8b949e">FastAPI</text><rect x="519" y="220" width="72" height="30" rx="15" fill="#161b22" stroke="#30363d" /><text x="555" y="240" text-anchor="middle" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#8b949e">Docker</text>
+
+  <g transform="translate(1104,146)">
+    <circle r="100" fill="none" stroke="#58a6ff" stroke-opacity="0.10" />
+    <circle r="72" fill="none" stroke="#58a6ff" stroke-opacity="0.13" />
+    <circle r="44" fill="none" stroke="#58a6ff" stroke-opacity="0.16" />
+    <line x1="-100" y1="0" x2="100" y2="0" stroke="#58a6ff" stroke-opacity="0.08" />
+    <line x1="0" y1="-100" x2="0" y2="100" stroke="#58a6ff" stroke-opacity="0.08" />
+    <g>
+      <path d="M0 0 L55 -45 A71 71 0 0 0 0 -71 Z" fill="url(#sweep)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7s" repeatCount="indefinite" />
+    </g>
+    <circle r="3.5" fill="#f59e0b" />
+    <circle cx="42" cy="-20" r="3" fill="#3fb950" />
+    <circle cx="-50" cy="32" r="2.6" fill="#22d3ee" />
+    <circle cx="18" cy="56" r="2.2" fill="#d29922" />
+    <circle cx="-26" cy="-44" r="2" fill="#22d3ee" />
+    <text x="0" y="132" text-anchor="middle" font-size="12.5" letter-spacing="3"
+          font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', 'Noto Sans SC', 'Microsoft YaHei', monospace" fill="#6e7681">RECON → VERIFY</text>
+  </g>
+</svg>
