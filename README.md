@@ -150,33 +150,11 @@
 想要哪个项目的详细说明或复现步骤，也可以开 Issue 点单。
 
 <p align="center">
-  <a href="https://github.com/junlume" title="GitHub · junlume">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/github/ffffff" />
-      <img height="24" width="24" src="https://cdn.simpleicons.org/github/181717" alt="GitHub" />
-    </picture>
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/junlume/corehacker" title="CoreHacker">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/shieldsdotio/ffffff" />
-      <img height="24" width="24" src="https://cdn.simpleicons.org/shieldsdotio/DC2626" alt="CoreHacker" />
-    </picture>
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/junlume/pentest-ai-knowledge" title="渗透测试 AI 知识库">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/readthedocs/ffffff" />
-      <img height="24" width="24" src="https://cdn.simpleicons.org/readthedocs/0969DA" alt="知识库" />
-    </picture>
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/junlume/textbook-exercise-rag" title="Textbook Exercise RAG">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/fastapi/ffffff" />
-      <img height="24" width="24" src="https://cdn.simpleicons.org/fastapi/009688" alt="RAG" />
-    </picture>
-  </a>
+  <a href="https://github.com/junlume"><img src="https://img.shields.io/badge/GitHub-junlume-181717?style=flat-square&amp;logo=github&amp;logoColor=white" alt="GitHub" /></a>
+  &nbsp;
+  <a href="https://github.com/junlume/junlume/issues"><img src="https://img.shields.io/badge/Issue-%E5%BC%80%E4%B8%AA%E5%8D%95-0969DA?style=flat-square&amp;logo=githubissues&amp;logoColor=white" alt="开 Issue" /></a>
+  &nbsp;
+  <a href="https://github.com/junlume?tab=repositories"><img src="https://img.shields.io/badge/Projects-%E7%9C%8B%E7%9C%8B%E4%BB%93%E5%BA%93-0E7490?style=flat-square&amp;logo=github&amp;logoColor=white" alt="项目列表" /></a>
 </p>
 
 <p align="center"><sub><i>素材由 <code>scripts/make_assets.py</code> 生成 · 改文字或配色后重跑即可</i></sub></p>
