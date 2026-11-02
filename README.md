@@ -35,8 +35,10 @@
         🧪 信条　测试与评测先行
       </p>
       <p align="center">
-        <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/status-building-dark.svg" /><img src="./assets/status-building-light.svg" alt="在做" /></picture><br />
-        <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/status-shipped-dark.svg" /><img src="./assets/status-shipped-light.svg" alt="已完成" /></picture><br />
+        <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/status-building-dark.svg" /><img src="./assets/status-building-light.svg" alt="在做" /></picture>
+        &nbsp;
+        <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/status-shipped-dark.svg" /><img src="./assets/status-shipped-light.svg" alt="已完成" /></picture>
+        &nbsp;
         <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/status-learning-dark.svg" /><img src="./assets/status-learning-light.svg" alt="在学" /></picture>
       </p>
     </td>
@@ -96,13 +98,11 @@
 
 ## Tech stack
 
-| | |
-|---|---|
-| **语言** | `Python` `TypeScript / JavaScript` `C++` `PowerShell` `Go`（阅读） |
-| **AI 安全** | `Multi-Agent` `MCP` `LangGraph / ReAct` `渗透工具链` `钓鱼 URL 检测` `证据链与复现` |
-| **检索 / LLM** | `RAG` `BM25 + RRF` `ChromaDB` `fastembed` `OpenAI 兼容 / Ollama` |
-| **算子 / 推理** | `PyTorch` `Biren SUPA` `ONNX` `延迟与正确性基准` |
-| **工程** | `FastAPI` `Vue 3` `Vite` `SQLite` `Pydantic` `pytest` `Docker` `GitHub Actions` |
+- **语言** · `Python` `TypeScript / JavaScript` `C++` `PowerShell` `Go`（阅读）
+- **AI 安全** · `Multi-Agent` `MCP` `LangGraph / ReAct` `渗透工具链` `钓鱼 URL 检测` `证据链与复现`
+- **检索 / LLM** · `RAG` `BM25 + RRF` `ChromaDB` `fastembed` `OpenAI 兼容 / Ollama`
+- **算子 / 推理** · `PyTorch` `Biren SUPA` `ONNX` `延迟与正确性基准`
+- **工程** · `FastAPI` `Vue 3` `Vite` `SQLite` `Pydantic` `pytest` `Docker` `GitHub Actions`
 
 <p align="center">
   <picture>
