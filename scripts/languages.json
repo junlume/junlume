@@ -1,0 +1,24 @@
+{
+  "as_of": "2026-11-01",
+  "note": "公开仓库语言字节数（不含 fork）。python scripts/make_assets.py --refresh 会重新拉取并覆盖本文件。",
+  "totals": {
+    "Python": 2590494,
+    "C++": 1100601,
+    "JavaScript": 503719,
+    "Vue": 234273,
+    "CSS": 132306,
+    "Shell": 126614,
+    "HTML": 66868,
+    "Astro": 31898,
+    "C": 29812,
+    "PowerShell": 25872,
+    "Batchfile": 21069,
+    "CMake": 10440,
+    "TypeScript": 214,
+    "Java": 1655,
+    "Hack": 767,
+    "PHP": 374,
+    "Dockerfile": 314,
+    "Makefile": 642
+  }
+}

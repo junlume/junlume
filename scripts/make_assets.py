@@ -16,6 +16,8 @@ CSS/SMIL 动画在 <img> 中同样会跑。
 from pathlib import Path
 import json
 import os
+import sys
+import time
 import urllib.request
 from datetime import date
 
@@ -224,29 +226,104 @@ LANG_COLORS = {
 
 
 def fetch_languages(user: str) -> tuple[dict[str, int], str]:
-    """汇总公开仓库语言字节数（跳过 fork）；失败就退回离线快照。"""
+    """汇总公开仓库语言字节数（跳过 fork）；失败就退回离线快照。
+
+    优先用 gh CLI（本机网络下最稳），没有 gh 再直连 / 走代理，最后才用快照。
+    """
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     headers = {"User-Agent": "profile-assets"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
-    def get(url: str):
-        req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=25) as resp:
-            return json.load(resp)
+    def gh_json(path: str):
+        try:
+            import subprocess
+            out = subprocess.run(
+                ["gh", "api", path], capture_output=True, text=True,
+                timeout=40, encoding="utf-8",
+            )
+            if out.returncode == 0 and out.stdout.strip():
+                return json.loads(out.stdout)
+        except Exception:
+            pass
+        return None
 
-    try:
+    def gh_collect() -> dict[str, int]:
+        repos = gh_json(f"users/{user}/repos?per_page=100")
+        if not repos:
+            raise RuntimeError("gh api returned nothing")
+        totals: dict[str, int] = {}
+        for repo in repos:
+            if repo.get("fork"):
+                continue
+            langs = gh_json(f"repos/{user}/{repo['name']}/languages")
+            if langs is None:
+                raise RuntimeError(f"gh api failed for {repo['name']}")
+            for lang, size in langs.items():
+                totals[lang] = totals.get(lang, 0) + size
+        return totals
+
+    def make_get(opener):
+        def get(url: str):
+            last = None
+            for _ in range(2):
+                try:
+                    req = urllib.request.Request(url, headers=headers)
+                    with opener.open(req, timeout=12) as resp:
+                        return json.load(resp)
+                except Exception as exc:
+                    last = exc
+                    time.sleep(1)
+            raise last
+        return get
+
+    def http_collect(get) -> dict[str, int]:
         repos = get(f"https://api.github.com/users/{user}/repos?per_page=100")
         totals: dict[str, int] = {}
         for repo in repos:
             if repo.get("fork"):
                 continue
-            for lang, size in get(f"https://api.github.com/repos/{user}/{repo['name']}/languages").items():
+            # 任一仓库失败就整体作废，避免缓存的占比是残缺数据
+            langs = get(f"https://api.github.com/repos/{user}/{repo['name']}/languages")
+            for lang, size in langs.items():
                 totals[lang] = totals.get(lang, 0) + size
-        if totals:
-            return totals, date.today().isoformat()
-    except Exception as exc:
-        print(f"  [提示] 语言数据拉取失败（{type(exc).__name__}），改用离线快照")
+        return totals
+
+    attempts = [
+        ("gh CLI", gh_collect),
+        ("直连", lambda: http_collect(make_get(urllib.request.build_opener(urllib.request.ProxyHandler({}))))),
+        ("代理", lambda: http_collect(make_get(urllib.request.build_opener()))),
+    ]
+    for label, collect in attempts:
+        try:
+            totals = collect()
+            if totals:
+                return totals, date.today().isoformat()
+        except Exception as exc:
+            print(f"  [提示] {label}拉取语言数据失败（{type(exc).__name__}）")
+    return {}, ""
+
+
+SNAPSHOT = Path(__file__).resolve().parent / "languages.json"
+
+
+def load_languages(refresh: bool = False) -> tuple[dict[str, int], str]:
+    """优先读 scripts/languages.json（可复现、不依赖网络）；--refresh 时重新拉取并落盘。"""
+    if not refresh and SNAPSHOT.exists():
+        data = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+        if data.get("totals"):
+            return data["totals"], data.get("as_of", "unknown")
+
+    totals, as_of = fetch_languages(OWNER)
+    if totals:
+        SNAPSHOT.write_text(json.dumps(
+            {"as_of": as_of, "note": "公开仓库语言字节数（不含 fork）。--refresh 重新拉取并覆盖本文件。",
+             "totals": dict(sorted(totals.items(), key=lambda kv: -kv[1]))},
+            ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"  已更新 {SNAPSHOT.name}")
+        return totals, as_of
+
+    print("  [提示] 全部拉取失败，改用内置离线快照")
     return FALLBACK_LANGS, FALLBACK_LANG_DATE
 
 
@@ -258,8 +335,10 @@ def langcard(theme: str, totals: dict[str, int], as_of: str, top: int = 6) -> st
         head = head + [("其他 · Others", sum(v for _, v in rest))]
     total = sum(v for _, v in head) or 1
 
-    w, h = 1280, 250
-    bar_x, bar_y, bar_w, bar_h = 56, 122, w - 112, 26
+    # 按 README 实际显示宽度（约 790px）设计，缩放后字号仍然可读
+    w, h = 880, 222
+    pad = 40
+    bar_x, bar_y, bar_w, bar_h = pad, 88, w - pad * 2, 24
     segs, legend = [], []
     x = bar_x
     for i, (lang, size) in enumerate(head):
@@ -270,33 +349,37 @@ def langcard(theme: str, totals: dict[str, int], as_of: str, top: int = 6) -> st
             f'<rect x="{x:.1f}" y="{bar_y}" width="{seg_w:.1f}" height="{bar_h}" '
             f'fill="{color}" rx="{3 if i in (0, len(head) - 1) else 0}" />'
         )
-        if frac >= 0.055:
+        if frac >= 0.07:
             segs.append(
-                f'<text x="{x + seg_w / 2:.1f}" y="{bar_y + 18}" text-anchor="middle" '
-                f'font-size="12.5" font-family="{MONO}" fill="#ffffff" '
-                f'fill-opacity="0.92">{frac * 100:.1f}%</text>'
+                f'<text x="{x + seg_w / 2:.1f}" y="{bar_y + 17}" text-anchor="middle" '
+                f'font-size="12" font-family="{MONO}" fill="#ffffff" '
+                f'fill-opacity="0.94">{frac * 100:.1f}%</text>'
             )
         legend.append((lang, color, frac))
         x += seg_w
 
     size_bits = []
-    lx = 56
+    lx, row = pad, 0
+    row_limit = pad + bar_w * 0.62  # 两行更均衡，避免最后一行只剩一个孤立小条
     for lang, color, frac in legend:
         text = f"{lang} {frac * 100:.1f}%"
-        cw = 28 + len(text) * 8.2
+        cw = 27 + len(text) * 8.0
+        if lx + cw > row_limit and lx > pad:
+            lx, row = pad, row + 1
+        ly = 132 + row * 34
         size_bits.append(
-            f'<rect x="{lx:.0f}" y="170" width="{cw:.0f}" height="28" rx="14" '
+            f'<rect x="{lx:.0f}" y="{ly}" width="{cw:.0f}" height="29" rx="14.5" '
             f'fill="{c["chip_bg"]}" stroke="{c["chip_border"]}" />'
-            f'<circle cx="{lx + 16:.0f}" cy="184" r="4.5" fill="{color}" />'
-            f'<text x="{lx + 28:.0f}" y="189" font-size="13" font-family="{MONO}" '
+            f'<circle cx="{lx + 15:.0f}" cy="{ly + 14.5:.0f}" r="4.5" fill="{color}" />'
+            f'<text x="{lx + 26:.0f}" y="{ly + 19:.0f}" font-size="13" font-family="{MONO}" '
             f'fill="{c["sub"]}">{esc(text)}</text>'
         )
         lx += cw + 10
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="语言构成">
-  <rect width="{w}" height="{h}" rx="16" fill="{c["bg"]}" stroke="{c["border"]}" />
-  <text x="56" y="64" font-size="21" font-weight="600" font-family="{MONO}" fill="{c["title"]}">Language Mix</text>
-  <text x="{w - 56}" y="64" text-anchor="end" font-size="12.5" font-family="{MONO}" fill="{c["dim"]}">公开仓库 · 字节占比 · 不含 fork · {esc(as_of)}</text>
+  <rect width="{w}" height="{h}" rx="14" fill="{c["bg"]}" stroke="{c["border"]}" />
+  <text x="{pad}" y="48" font-size="20" font-weight="600" font-family="{MONO}" fill="{c["title"]}">Language Mix</text>
+  <text x="{w - pad}" y="48" text-anchor="end" font-size="12" font-family="{MONO}" fill="{c["dim"]}">公开仓库 · 字节占比 · 不含 fork · {esc(as_of)}</text>
   {"".join(segs)}
   {"".join(size_bits)}
 </svg>
@@ -307,7 +390,7 @@ def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
     written = []
 
-    langs, lang_date = fetch_languages(OWNER)
+    langs, lang_date = load_languages(refresh="--refresh" in sys.argv[1:])
     print(f"  语言数据：{len(langs)} 种，日期 {lang_date}")
 
     for theme in ("light", "dark"):
